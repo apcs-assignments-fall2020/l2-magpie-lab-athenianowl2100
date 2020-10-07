@@ -31,16 +31,32 @@ public class Magpie
     public String getResponse(String statement)
     {
         String response = "";
-        if (statement.indexOf("no") >= 0)
+        if (findWord(statement, "no") >= 0)
         {
             response = "Why so negative?";
         }
-        else if (statement.indexOf("mother") >= 0
-                || statement.indexOf("father") >= 0
-                || statement.indexOf("sister") >= 0
-                || statement.indexOf("brother") >= 0)
+        else if (findWord(statement, "mother") >= 0
+                || findWord(statement, "father") >= 0
+                || findWord(statement, "sister") >= 0
+                || findWord(statement, "brother") >= 0)
         {
             response = "Tell me more about your family.";
+        }
+        else if (findWord(statement, "I want") >= 0) {
+            response = transformIWantStatement(statement);
+        }
+        else if (findWord(statement, "I want to") >= 0) {
+            response = transformIWantToStatement(statement);
+        }
+        else if ((findWord(statement, "I") >= 0) && 
+                 (findWord(statement, "you") >= 0) &&
+                 (findWord(statement, "you") > findWord(statement, "I"))){
+            response = transformIYouStatement(statement);
+        }
+        else if ((findWord(statement, "you") >= 0) && 
+                 (findWord(statement, "me") >= 0) &&
+                 (findWord(statement, "me") > findWord(statement, "you"))){
+            response = transformYouMeStatement(statement);
         }
         else
         {
@@ -90,7 +106,10 @@ public class Magpie
     // The method returns the index of the first character in word
     // if it is found, and returns -1 otherwise. 
     public int findWord(String str, String word) {
-        return -1;
+        str = " " + str.toLowerCase() + " ";
+        word = " " + word.toLowerCase() + " ";
+
+        return str.indexOf(word);
     }
 
     
@@ -105,7 +124,8 @@ public class Magpie
     public String transformIWantStatement(String statement)
     {
         //your code here
-        return "";
+        int idx = findWord(statement, "I want");
+        return "Would you really be happy if you had " + statement.substring(idx + 7) + "?";
     }
 
     /**
@@ -117,7 +137,9 @@ public class Magpie
     public String transformIYouStatement(String statement)
     {
         //your code here
-        return "";
+        int idx1 = findWord(statement, "I");
+        int idx2 = findWord(statement, "you");
+        return "Why do you " + statement.substring(idx1 + 2, idx2 - 1) + " me?";
     }
 
     /**
@@ -129,7 +151,8 @@ public class Magpie
     public String transformIWantToStatement(String statement)
     {
         // your code here
-        return "";
+        int idx = findWord(statement, "I want to");
+        return "What would it mean to " + statement.substring(idx + 10) + "?";
     }
 
 
@@ -144,6 +167,8 @@ public class Magpie
     public String transformYouMeStatement(String statement)
     {
         // your code here
-        return "";
+        int idx1 = findWord(statement, "you");
+        int idx2 = findWord(statement, "me");
+        return "What makes you think that I " + statement.substring(idx1 + 4, idx2 - 1) + " you?";
     }
 }
